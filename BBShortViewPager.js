@@ -118,7 +118,7 @@ export default class BBShortViewPager extends BaseComponent {
                                     outputRange: [this.props.fontColor, this.props.fontColor, this.props.selectedFontColor, this.props.fontColor, this.props.fontColor]
                                 })
                             }}>
-                                {item}<Text style={{ color: '#f00736' }}>{this.props.from == 'iberCarePage' && index == 2 && this.props.new_order && this.props.new_order != 0 ? '(' + this.props.new_order + ')' : null}</Text>
+                                {item}
                             </Animated.Text>
 
 
