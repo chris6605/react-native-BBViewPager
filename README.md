@@ -11,6 +11,7 @@ this is a viewpager for ios and android , and it support scroll , you also can s
                     titleArr={['世界杯', '推薦', '我的關注', '財經', '娛樂', '圖片']}
                     renderPage={this.renderPage.bind(this)}
                     onScrollToIndex={this.onScrollToIndex.bind(this)}
+                    showIndicator={true}
                 />
  这些属性你可以自定义: 
  static defaultProps = {
@@ -22,6 +23,7 @@ this is a viewpager for ios and android , and it support scroll , you also can s
         selectedFontColor: Const.mainColor,
         fontWeight: '400',
         itemMargin: Const.getSize(36),
+        showIndicator={true}
     }
     
     

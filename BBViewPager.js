@@ -33,6 +33,7 @@ export default class BBViewPager extends BaseComponent {
         selectedFontColor: '#1097d5',
         fontWeight: '400',
         itemMargin: Const.getSize(35),
+        showIndicator: true
     }
 
     constructor(props) {
@@ -51,7 +52,11 @@ export default class BBViewPager extends BaseComponent {
     componentDidMount() {
         // 延時一會再顯示指示條 否則獲取不到 layout
         this.timer = setTimeout(() => {
-            this.setState({ showIndicator: true });
+            if (this.props.showIndicator) {
+                this.setState({ showIndicator: true });
+            } else {
+                this.setState({ showIndicator: false });
+            }
         }, 500);
 
     }

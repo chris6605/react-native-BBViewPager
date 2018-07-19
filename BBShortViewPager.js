@@ -32,6 +32,7 @@ export default class BBShortViewPager extends BaseComponent {
         fontColor: '#333333',
         selectedFontColor: '#1097d5',
         fontWeight: '400',
+        showIndicator: true,
     }
 
     constructor(props) {
@@ -50,7 +51,12 @@ export default class BBShortViewPager extends BaseComponent {
     componentDidMount() {
         // 延時一會再顯示指示條 否則獲取不到 layout
         this.timer = setTimeout(() => {
-            this.setState({ showIndicator: true });
+            if (this.props.showIndicator) {
+                this.setState({ showIndicator: true });
+            } else {
+                this.setState({ showIndicator: false });
+            }
+
         }, 500);
 
     }
