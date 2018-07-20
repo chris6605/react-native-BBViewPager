@@ -77,7 +77,6 @@ export default class BBShortViewPager extends BaseComponent {
             });
         } else {
             this.viewPager.setPage(index);
-            this.props.onScrollToIndex(index)
         }
     }
 
