@@ -11,6 +11,11 @@ import {
     ScrollView
 } from 'react-native';
 
+/**
+*   这里的 Const 没有传上来 无非也就是一些 getsize 和 color screenWidth 等文件配置 可以使用你自己的 Const
+*   BaseComponent 你可以直接继承 Component 也是一样的 这里也没有用到我的 BaseComponent 里的什么东西 
+**/
+
 import Const from '../base/Const';
 
 import BaseComponent from './BaseComponent';
@@ -24,6 +29,7 @@ export default class BBViewPager extends BaseComponent {
 
     itemLayout = [];
 
+    // 默认属性  可自定义 props
     static defaultProps = {
         titleArr: [],
         height: 50,
@@ -39,9 +45,9 @@ export default class BBViewPager extends BaseComponent {
     constructor(props) {
         super(props);
         this.state = {
-            titleArr: this.props.titleArr,
-            selectedIndex: 0,
-            showIndicator: false,
+            titleArr: this.props.titleArr,  // titleBar 显示
+            selectedIndex: 0,               // 当前选中的titleBar index
+            showIndicator: false,           // 是否显示指示条
         };
     }
 
@@ -68,7 +74,7 @@ export default class BBViewPager extends BaseComponent {
     }
 
 
-    //  父組件調用
+    //  提供给父組件調用的方法 this.ref.BBViewPager.scrollToIndex(xxx)
     scrollToIndex(index) {
         if (Platform.OS == 'ios') {
             this.pagerList.scrollToOffset({
@@ -77,7 +83,6 @@ export default class BBViewPager extends BaseComponent {
             });
         } else {
             this.viewPager.setPage(index);
-            this.props.onScrollToIndex(index)
         }
     }
 
@@ -129,7 +134,6 @@ export default class BBViewPager extends BaseComponent {
                             }}>
                                 {item}
                             </Animated.Text>
-
 
                         </TouchableOpacity>
                     })
@@ -234,6 +238,7 @@ export default class BBViewPager extends BaseComponent {
                     this.scroll.scrollToEnd();
                 }
             }}>
+                
             {this.renderAndroidPage()}
 
         </ViewPagerAndroid>
