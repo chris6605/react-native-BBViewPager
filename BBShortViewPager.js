@@ -40,7 +40,7 @@ export default class BBShortViewPager extends BaseComponent {
         this.state = {
             titleArr: this.props.titleArr,
             selectedIndex: 0,
-            showIndicator: false,
+            showIndicator: this.props.showIndicator,
         };
     }
 
@@ -56,7 +56,7 @@ export default class BBShortViewPager extends BaseComponent {
             } else {
                 this.setState({ showIndicator: false });
             }
-
+           
         }, 500);
 
     }
@@ -69,14 +69,18 @@ export default class BBShortViewPager extends BaseComponent {
 
 
     //  父組件調用
+    //  使用redux之後 connect 之后 这个组件会出现找不到这个方法 也就是说无法再外部通过 ref获取组件 调用这个方法 todo
     scrollToIndex(index) {
         if (Platform.OS == 'ios') {
+            // ios 调用 scrollToOffset 就会调用 onMomentumScrollEnd() 所以无需再调用this.props.onScrollToIndex
             this.pagerList.scrollToOffset({
                 animated: true,
                 offset: Const.mScreenWidth * index
             });
         } else {
+            // 安卓的viewPager 在调用 setPage的时候不会调用onPageSelected 方法 所以在这里手动调用一下
             this.viewPager.setPage(index);
+            this.props.onScrollToIndex && this.props.onScrollToIndex(index);
         }
     }
 
@@ -112,6 +116,7 @@ export default class BBShortViewPager extends BaseComponent {
                                     });
                                 } else {
                                     this.viewPager.setPage(index);
+                                    this.props.onScrollToIndex && this.props.onScrollToIndex(index);
                                 }
 
                             }}>
@@ -175,15 +180,19 @@ export default class BBShortViewPager extends BaseComponent {
                 this.props.onScrollBeginDrag && this.props.onScrollBeginDrag(offsetX);
             }}
             onScroll={(e) => {
+                // ios 的随动动画, 安卓也可以监听 position 碍于性能问题 会比较卡 还不如不随动
                 let num = e.nativeEvent.contentOffset.x / Const.mScreenWidth
                 this.path.setValue(num)
             }}
             scrollEventThrottle={1}
             onMomentumScrollEnd={(e) => {
+                // 滚动动画结束的时候调用的方法 一次滚动调用一次
+                // 千万不要在 onScroll 中调用 setState() 难以想象的卡顿 浪费渲染性能
                 let num = Math.round(e.nativeEvent.contentOffset.x / Const.mScreenWidth);
                 this.setState({ selectedIndex: num }, () => {
                     this.path.setValue(num);
                 });
+
                 this.props.onScrollToIndex && this.props.onScrollToIndex(num);
 
             }}
@@ -194,6 +203,7 @@ export default class BBShortViewPager extends BaseComponent {
         />
     }
 
+    
     renderItem(item) {
         let index = item.index
         return this.props.renderPage && this.props.renderPage(index)
@@ -203,7 +213,7 @@ export default class BBShortViewPager extends BaseComponent {
     renderAndroidViewPager() {
         return <ViewPagerAndroid ref={viewPager => this.viewPager = viewPager}
             style={{ flex: 1 }}
-            initialPage={this.state.initialPage}
+            initialPage={0}
             scrollEnabled={true}
             onPageSelected={(e) => {
                 let num = e.nativeEvent.position
