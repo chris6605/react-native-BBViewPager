@@ -1,3 +1,5 @@
+// 这是一个 titleBar数目很多 且支持滚动的 如果数目少且不可滚动  请用 BBShortViewPager
+
 import React, { Component } from 'react';
 import {
     View,
@@ -47,7 +49,7 @@ export default class BBViewPager extends BaseComponent {
         this.state = {
             titleArr: this.props.titleArr,  // titleBar 显示
             selectedIndex: 0,               // 当前选中的titleBar index
-            showIndicator: false,           // 是否显示指示条
+            showIndicator: this.props.showIndicator,           // 是否显示指示条
         };
     }
 
@@ -75,6 +77,7 @@ export default class BBViewPager extends BaseComponent {
 
 
     //  提供给父組件調用的方法 this.ref.BBViewPager.scrollToIndex(xxx)
+    //   需要注意的是使用 redux 之后就获取不到这个方法了
     scrollToIndex(index) {
         if (Platform.OS == 'ios') {
             this.pagerList.scrollToOffset({
@@ -83,6 +86,7 @@ export default class BBViewPager extends BaseComponent {
             });
         } else {
             this.viewPager.setPage(index);
+            this.props.onScrollToIndex && this.props.onScrollToIndex(index)
         }
     }
 
@@ -121,6 +125,7 @@ export default class BBViewPager extends BaseComponent {
                                     });
                                 } else {
                                     this.viewPager.setPage(index);
+                                    this.props.onScrollToIndex && this.props.onScrollToIndex(index)
                                 }
 
                             }}>
@@ -190,11 +195,12 @@ export default class BBViewPager extends BaseComponent {
             scrollEventThrottle={1}
             onMomentumScrollEnd={(e) => {
                 let num = Math.round(e.nativeEvent.contentOffset.x / Const.mScreenWidth);
+                this.props.onScrollToIndex && this.props.onScrollToIndex(num);
                 this.setState({ selectedIndex: num }, () => {
                     this.path.setValue(num);
                 });
-                this.props.onScrollToIndex && this.props.onScrollToIndex(num);
-
+               
+                // 上方 ScrollView 滚动到中间位置
                 let x_loacation = this.itemLayout[num].x;
                 if (x_loacation + this.itemLayout[num].width < Const.mScreenWidth) {
                     this.scroll.scrollTo({ x: 0, y: 0, animated: true })
